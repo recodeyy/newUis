@@ -47,9 +47,9 @@ export function Navbar({ scrollY }) {
         </div>
 
         {/* ── Floating Center Pill ── */}
-        <div className="pointer-events-auto hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 bg-[#0e0e0e]/95 backdrop-blur-xl border border-white/[0.07] rounded-full p-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_40px_rgba(0,0,0,0.7)]">
+        <div className="pointer-events-auto hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 bg-[#0e0e0e]/95 backdrop-blur-xl border border-white/[0.07] rounded-full p-2 w-max shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_40px_rgba(0,0,0,0.7)] flex-nowrap">
           {links.map(({ label, id }) => (
-            <div key={id} className="relative">
+            <div key={id} className="relative z-10 flex shrink-0">
               <a
                 href={`#${id}`}
                 onClick={() => setActive(id)}
