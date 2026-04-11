@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://recody.in/sitemap.xml
