@@ -76,12 +76,12 @@ export function Navbar({ scrollY }) {
 
         {/* ── Right CTAs ── */}
         <div className="pointer-events-auto hidden md:flex items-center justify-end gap-2 xl:gap-4 z-50 shrink-0 md:w-[240px]">
-          <button className="flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-white/60 hover:text-white text-[14px] xl:text-[16px] font-medium rounded-full transition-colors whitespace-nowrap">
+          <a href="/login" className="flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-white/60 hover:text-white text-[14px] xl:text-[16px] font-medium rounded-full transition-colors whitespace-nowrap">
             Log in
-          </button>
-          <button className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-transparent hover:bg-[#b4f481]/10 border border-[#b4f481]/70 hover:border-[#b4f481] text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full transition-all duration-200 whitespace-nowrap">
+          </a>
+          <a href="/register" className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-transparent hover:bg-[#b4f481]/10 border border-[#b4f481]/70 hover:border-[#b4f481] text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full transition-all duration-200 whitespace-nowrap">
             Get started
-          </button>
+          </a>
         </div>
 
         {/* ── Mobile hamburger ── */}
