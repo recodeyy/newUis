@@ -11,10 +11,10 @@ const Spline = dynamic(() => import("../ui/SplineWrapper"), {
 });
 
 const STATS = [
-  { value: "93+",   label: "Projects" },
-  { value: "100%",  label: "Satisfaction" },
-  { value: "3hrs",  label: "Saved / day" },
-  { value: "$80k",  label: "Saved / mo." },
+  { value: "93+", label: "Projects" },
+  { value: "100%", label: "Satisfaction" },
+  { value: "3hrs", label: "Saved / day" },
+  { value: "$80k", label: "Saved / mo." },
 ];
 
 export function Hero() {
@@ -26,12 +26,12 @@ export function Hero() {
     const el = splineContainerRef.current;
     if (!el) return;
     const block = (e) => e.stopPropagation();
-    el.addEventListener("wheel",      block, { capture: true, passive: false });
-    el.addEventListener("mousedown",  block, { capture: true });
+    el.addEventListener("wheel", block, { capture: true, passive: false });
+    el.addEventListener("mousedown", block, { capture: true });
     el.addEventListener("touchstart", block, { capture: true });
     return () => {
-      el.removeEventListener("wheel",      block, { capture: true });
-      el.removeEventListener("mousedown",  block, { capture: true });
+      el.removeEventListener("wheel", block, { capture: true });
+      el.removeEventListener("mousedown", block, { capture: true });
       el.removeEventListener("touchstart", block, { capture: true });
     };
   }, []);
@@ -67,7 +67,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
           className="text-[13px] font-medium text-white/40 tracking-widest uppercase mb-6"
         >
-          AI Studio — Build smarter products
+          Build smarter products
         </motion.p>
 
         <motion.h1
@@ -81,7 +81,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.12 }}
           className="text-[16px] text-white/50 max-w-[440px] leading-[1.7] mb-10 pointer-events-none"
         >
-          We develop custom AI solutions — from chatbots and LLMs to workflow automation — for innovative companies.
+          We develop custom management systems and automation solutions — and we're launching 2 new products soon.
         </motion.p>
 
         <motion.div
