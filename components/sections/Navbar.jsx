@@ -39,7 +39,7 @@ export function Navbar({ scrollY }) {
       <div className="flex items-center justify-between max-w-[1400px] mx-auto px-6 md:px-10">
 
         {/* ── Logo ── */}
-        <div className="pointer-events-auto flex items-center gap-2 cursor-pointer z-50 shrink-0">
+        <div className="pointer-events-auto flex items-center gap-2 cursor-pointer z-50 shrink-0 md:w-[240px]">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
           </svg>
@@ -47,37 +47,39 @@ export function Navbar({ scrollY }) {
         </div>
 
         {/* ── Floating Center Pill ── */}
-        <div className="pointer-events-auto hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2 bg-[#0e0e0e]/95 backdrop-blur-xl border border-white/[0.07] rounded-full p-2 w-max shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_40px_rgba(0,0,0,0.7)] flex-nowrap">
-          {links.map(({ label, id }) => (
-            <div key={id} className="relative z-10 flex shrink-0">
-              <a
-                href={`#${id}`}
-                onClick={() => setActive(id)}
-                className={`relative flex items-center justify-center px-6 py-2.5 text-[16px] font-medium rounded-full transition-colors duration-200 whitespace-nowrap z-10 ${active === id
-                    ? "text-black"
-                    : "text-white/60 hover:text-white"
-                  }`}
-              >
-                {label}
-              </a>
-              {active === id && (
-                <motion.div
-                  layoutId="pill-active"
-                  className="absolute inset-0 bg-[#b4f481] rounded-full"
-                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  style={{ zIndex: 0 }}
-                />
-              )}
-            </div>
-          ))}
+        <div className="hidden lg:flex flex-1 justify-center items-center overflow-hidden">
+          <div className="pointer-events-auto flex items-center gap-1 xl:gap-2 bg-[#0e0e0e]/95 backdrop-blur-xl border border-white/[0.07] rounded-full p-1.5 xl:p-2 w-max shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_40px_rgba(0,0,0,0.7)] flex-nowrap">
+            {links.map(({ label, id }) => (
+              <div key={id} className="relative z-10 flex shrink-0">
+                <a
+                  href={`#${id}`}
+                  onClick={() => setActive(id)}
+                  className={`relative flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-[14px] xl:text-[16px] font-medium rounded-full transition-colors duration-200 whitespace-nowrap z-10 ${active === id
+                      ? "text-black"
+                      : "text-white/60 hover:text-white"
+                    }`}
+                >
+                  {label}
+                </a>
+                {active === id && (
+                  <motion.div
+                    layoutId="pill-active"
+                    className="absolute inset-0 bg-[#b4f481] rounded-full"
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    style={{ zIndex: 0 }}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── Right CTAs ── */}
-        <div className="pointer-events-auto hidden md:flex items-center gap-4 z-50 shrink-0">
-          <button className="flex items-center justify-center px-6 py-2.5 text-white/60 hover:text-white text-[16px] font-medium rounded-full transition-colors">
+        <div className="pointer-events-auto hidden md:flex items-center justify-end gap-2 xl:gap-4 z-50 shrink-0 md:w-[240px]">
+          <button className="flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-white/60 hover:text-white text-[14px] xl:text-[16px] font-medium rounded-full transition-colors whitespace-nowrap">
             Log in
           </button>
-          <button className="flex items-center justify-center px-8 py-2.5 bg-transparent hover:bg-[#b4f481]/10 border border-[#b4f481]/70 hover:border-[#b4f481] text-[#b4f481] text-[16px] font-medium rounded-full transition-all duration-200">
+          <button className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-transparent hover:bg-[#b4f481]/10 border border-[#b4f481]/70 hover:border-[#b4f481] text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full transition-all duration-200 whitespace-nowrap">
             Get started
           </button>
         </div>
