@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { saveWaitlistEmail } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import dynamic from "next/dynamic";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
 const Spline = dynamic(() => import("../ui/SplineWrapper"), {
   ssr: false,
@@ -20,21 +21,6 @@ const STATS = [
 export function Hero() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle");
-  const splineContainerRef = useRef(null);
-
-  useEffect(() => {
-    const el = splineContainerRef.current;
-    if (!el) return;
-    const block = (e) => e.stopPropagation();
-    el.addEventListener("wheel", block, { capture: true, passive: false });
-    el.addEventListener("mousedown", block, { capture: true });
-    el.addEventListener("touchstart", block, { capture: true });
-    return () => {
-      el.removeEventListener("wheel", block, { capture: true });
-      el.removeEventListener("mousedown", block, { capture: true });
-      el.removeEventListener("touchstart", block, { capture: true });
-    };
-  }, []);
 
   const handleSubmit = async () => {
     if (!email.includes("@")) return;
@@ -47,21 +33,15 @@ export function Hero() {
   return (
     <section className="min-h-[100dvh] flex flex-col relative overflow-hidden bg-black">
 
-      {/* Spline 3D Background */}
-      <div
-        ref={splineContainerRef}
-        className="absolute inset-0 z-0 pointer-events-auto overflow-hidden flex items-center justify-center"
-      >
-        <div
-          className="flex-none -translate-x-[8%]"
-          style={{ width: "160vw", height: "130vh", minWidth: "160vw", minHeight: "130vh" }}
-        >
-          <Spline scene="https://prod.spline.design/SIlM6P8qATwxscyl/scene.splinecode" />
-        </div>
+      {/* Spline 3D Background — interactive with cursor */}
+      <div className="absolute inset-0 z-0 overflow-hidden [&>div>canvas]{pointer-events:auto}">
+        <Spline scene="https://prod.spline.design/0idJjep310m2C2F2/scene.splinecode" />
+        {/* Physical mask to hide the Spline watermark (which is rendered in Shadow DOM) */}
+        <div className="absolute bottom-0 right-0 w-[200px] h-[60px] bg-black z-[100] pointer-events-none" />
       </div>
 
-      {/* Content — centered layout */}
-      <div className="max-w-[1200px] w-full mx-auto px-6 md:px-10 relative z-10 flex flex-col flex-grow justify-center items-center text-center pt-28 pb-10">
+      {/* Content — centered layout, pointer-events pass through to Spline */}
+      <div className="max-w-[1200px] w-full mx-auto px-6 md:px-10 relative z-10 flex flex-col flex-grow justify-center items-center text-center pt-28 pb-10 pointer-events-none">
 
         <motion.p
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
@@ -86,20 +66,29 @@ export function Hero() {
 
         <motion.div
           initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.18 }}
-          className="flex items-center gap-3 pointer-events-auto"
+          className="flex items-center gap-4 pointer-events-auto"
         >
-          <a
-            href="#contact"
-            className="flex items-center gap-2 bg-white text-black text-[14px] font-semibold px-6 py-3 rounded-xl hover:bg-white/90 transition-colors"
+          <HoverBorderGradient
+            as="div"
+            containerClassName="rounded-xl cursor-pointer"
+            className="rounded-xl px-0 py-0"
+            duration={1.5}
           >
-            Get started <ArrowRight size={15} />
-          </a>
-          <a
-            href="#services"
-            className="flex items-center gap-2 text-white/60 hover:text-white text-[14px] font-medium px-5 py-3 rounded-xl border border-white/10 hover:border-white/20 transition-colors"
+            <a href="#contact" className="flex items-center gap-2 bg-white text-black text-[14px] font-semibold px-6 py-3 rounded-xl">
+              Get started <ArrowRight size={15} />
+            </a>
+          </HoverBorderGradient>
+
+          <HoverBorderGradient
+            as="div"
+            containerClassName="rounded-xl cursor-pointer"
+            className="rounded-xl px-0 py-0"
+            duration={2}
           >
-            See our work
-          </a>
+            <a href="#services" className="flex items-center gap-2 bg-black text-white/70 text-[14px] font-medium px-5 py-3 rounded-xl">
+              See our work
+            </a>
+          </HoverBorderGradient>
         </motion.div>
       </div>
 

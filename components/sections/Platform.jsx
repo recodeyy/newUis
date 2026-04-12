@@ -1,15 +1,18 @@
 "use client";
 import { motion } from "framer-motion";
 import { useScrollReveal } from "../hooks/useScrollReveal";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
 function BlurCard({ children, gradient = "from-blue-600 via-indigo-600 to-purple-700", className = "" }) {
   return (
-    <div className={`relative rounded-2xl overflow-hidden group ${className}`}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-15 blur-3xl scale-110`} />
-      <div className="absolute inset-0 bg-[#0a0a0a]/90" />
-      <div className="absolute inset-0 rounded-2xl border border-white/[0.07] group-hover:border-white/[0.12] transition-colors duration-300" />
+    <HoverBorderGradient
+      as="div"
+      containerClassName={`rounded-2xl w-full ${className}`}
+      className="rounded-2xl bg-[#0a0a0a] w-full p-0"
+      duration={3}
+    >
       <div className="relative z-10">{children}</div>
-    </div>
+    </HoverBorderGradient>
   );
 }
 

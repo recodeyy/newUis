@@ -1,14 +1,5 @@
 @import "tailwindcss";
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
 /* Tailwind v4 preflight handles box-sizing and resets automatically.
    DO NOT add `margin: 0` to * — it overrides Tailwind's mx-auto utility. */
 *, *::before, *::after {
@@ -55,4 +46,15 @@ input::placeholder {
 @keyframes loadingBar {
   0% { width: 0%; }
   100% { width: 100%; }
+}
+
+/* Hide Spline Watermark */
+a[href*="spline.design"],
+[data-spline-watermark] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }

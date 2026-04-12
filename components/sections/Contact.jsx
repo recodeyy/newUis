@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { ArrowRight } from "lucide-react";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
 export function Contact() {
   const [ref, visible] = useScrollReveal();
@@ -76,12 +77,14 @@ export function Contact() {
                 value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
                 className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors resize-none"
               />
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl hover:bg-white/90 transition-colors mt-1"
+              <HoverBorderGradient
+                as="button"
+                containerClassName="rounded-xl w-full mt-1"
+                className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl"
+                duration={2}
               >
                 Send message <ArrowRight size={15} />
-              </button>
+              </HoverBorderGradient>
             </motion.form>
           )}
         </div>

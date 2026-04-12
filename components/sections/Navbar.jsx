@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
 export function Navbar({ scrollY }) {
   const scrolled = scrollY > 20;
@@ -79,9 +80,14 @@ export function Navbar({ scrollY }) {
           <a href="/login" className="flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-white/60 hover:text-white text-[14px] xl:text-[16px] font-medium rounded-full transition-colors whitespace-nowrap">
             Log in
           </a>
-          <a href="/register" className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-transparent hover:bg-[#b4f481]/10 border border-[#b4f481]/70 hover:border-[#b4f481] text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full transition-all duration-200 whitespace-nowrap">
-            Get started
-          </a>
+          <HoverBorderGradient
+            as="div"
+            containerClassName="rounded-full cursor-pointer"
+            className="rounded-full px-0 py-0"
+            duration={2}
+          >
+            <a href="/register" className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-black text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full whitespace-nowrap">Get started</a>
+          </HoverBorderGradient>
         </div>
 
         {/* ── Mobile hamburger ── */}
