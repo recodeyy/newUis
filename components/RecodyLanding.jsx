@@ -8,7 +8,7 @@ import { CTA }          from "./sections/CTA";
 import { Contact }      from "./sections/Contact";
 import { Footer }       from "./sections/Footer";
 import { LoadingScreen } from "./ui/LoadingScreen";
-import { TeamShowcase } from "./ui/team-showcase";
+
 
 export default function RecodyLanding() {
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ export default function RecodyLanding() {
         <Hero />
         <Products />
         <Platform />
-        <TeamShowcase />
+
         <CTA />
         <Contact />
       </main>
