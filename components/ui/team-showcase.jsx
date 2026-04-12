@@ -67,7 +67,7 @@ export function TeamShowcase({ members = DEFAULT_MEMBERS }) {
           initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
           className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4 text-center"
         >
-          The minds behind Recody
+          The minds behind Recodey
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 }}

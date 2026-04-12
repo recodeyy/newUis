@@ -2,7 +2,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Recody AI studio.",
+  title: "Recodey AI studio.",
   description: "We develop custom AI solutions for innovative companies.",
 };
 

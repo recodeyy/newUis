@@ -122,3 +122,43 @@ Date: 2026-04-12
 - Switched the hero typography to standard Inter removing the Glitch effect.
 - Created `Contact.jsx` for the Newsletter and Contacts sections, mirroring the supplied wireframes.
 - Integrated an interactive 3D Spline background into `Hero.jsx` using `@splinetool/react-spline/next` and `@splinetool/runtime`, maintaining interactive layers by manipulating `pointer-events`.
+
+## Uncommitted Change Map (Line-by-line)
+Scope: local uncommitted changes in the current workspace.
+
+- README.md
+  - Line 1: "Recody" -> "Recodey" in the title.
+- app/layout.js
+  - Line 5: metadata title updated to "Recodey".
+- components/sections/CTA.jsx
+  - Lines 8-10: review copy updated to "Recodey".
+  - Line 15: FAQ question updated to "Recodey".
+- components/sections/Contact.jsx
+  - Line 10: form state adds `subject` field.
+  - Line 12: `loading` state added.
+  - Lines 14-38: `handleSend` now async, posts to `/api/contact`, toggles loading, and handles failure fallback.
+  - Line 95: subject input now bound to form state.
+  - Line 105: submit button disabled when loading.
+  - Line 107: submit button hover style added.
+  - Line 110: submit button label toggles to "Sending..." while loading.
+- components/sections/Footer.jsx
+  - Line 13: brand text updated to "Recodey".
+  - Lines 36-40: footer credits replaced with Contact email link.
+- components/sections/Hero.jsx
+  - Line 6: added `AnimatedText` import.
+  - Lines 54-59: headline replaced with `AnimatedText` component.
+  - Line 63: hero paragraph size now responsive.
+  - Line 65: hero copy updated.
+- components/sections/Navbar.jsx
+  - Line 47: brand text updated to "Recodey".
+- components/ui/team-showcase.jsx
+  - Line 70: heading updated to "Recodey".
+- components/ui/animated-underline-text-one.jsx (new)
+  - Lines 1-90: animated underline text component using Framer Motion.
+- app/api/contact/route.js (new)
+  - Lines 1-50: Nodemailer POST route that sends contact form emails.
+- package.json
+  - Line 21: added `nodemailer` dependency.
+- package-lock.json
+  - Line 20: added `nodemailer` to dependencies list.
+  - Lines 5271-5279: added `nodemailer` package metadata.

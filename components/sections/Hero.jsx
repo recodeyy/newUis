@@ -3,6 +3,7 @@ import { useState } from "react";
 import { saveWaitlistEmail } from "@/lib/firebase";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { AnimatedText } from "../ui/animated-underline-text-one";
 import dynamic from "next/dynamic";
 import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
@@ -50,18 +51,18 @@ export function Hero() {
           Build smarter products
         </motion.p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.05 }}
-          className="text-[clamp(48px,8vw,100px)] font-bold text-white leading-[1.0] tracking-[-0.04em] mb-6 pointer-events-none"
-        >
-          Recody
-        </motion.h1>
+        <AnimatedText
+          text="Recodey"
+          className="pointer-events-auto z-20 mb-6 mt-[-10px]"
+          textClassName="text-[clamp(48px,8vw,100px)] font-bold text-white leading-[1.0] tracking-[-0.04em]"
+          underlineClassName="text-white/80"
+        />
 
         <motion.p
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.12 }}
-          className="text-[16px] text-white/50 max-w-[440px] leading-[1.7] mb-10 pointer-events-none"
+          className="text-[16px] md:text-[18px] text-white/50 max-w-[440px] leading-[1.7] mb-10 pointer-events-none"
         >
-          We develop custom management systems and automation solutions — and we're launching 2 new products soon.
+          Bespoke management systems and intelligent automation for modern enterprises.
         </motion.p>
 
         <motion.div

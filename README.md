@@ -1,4 +1,4 @@
-# Recody — Next.js Landing Page
+# Recodey — Next.js Landing Page
 
 Premium landing page built with **Next.js 14 App Router** + **Firebase Firestore** waitlist.
 

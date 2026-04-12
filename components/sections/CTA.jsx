@@ -5,14 +5,14 @@ import { useScrollReveal } from "../hooks/useScrollReveal";
 import { Plus, Minus } from "lucide-react";
 
 const REVIEWS = [
-  { text: "Recody's AI solutions save us a ton of money on a monthly basis. Highly recommend working with them.", name: "David Williams", role: "CTO", company: "Wave" },
-  { text: "Recody has significantly enhanced our efficiency, resulting in the completion of more work every day.", name: "Jessica Miller", role: "CCO", company: "Kama Inc." },
-  { text: "Highly recommended Recody's AI consultancy for any data-intensive business.", name: "Michael Anderson", role: "CEO", company: "Verdant Inc." },
+  { text: "Recodey's AI solutions save us a ton of money on a monthly basis. Highly recommend working with them.", name: "David Williams", role: "CTO", company: "Wave" },
+  { text: "Recodey has significantly enhanced our efficiency, resulting in the completion of more work every day.", name: "Jessica Miller", role: "CCO", company: "Kama Inc." },
+  { text: "Highly recommended Recodey's AI consultancy for any data-intensive business.", name: "Michael Anderson", role: "CEO", company: "Verdant Inc." },
   { text: "A game-changer for any company looking to leverage AI in a meaningful way.", name: "Olivia Johnson", role: "CPO", company: "Nova Innovations" },
 ];
 
 const FAQS = [
-  { q: "Is my company a good fit for Recody?", a: "Yes. Our bespoke AI solutions cater to a wide range of industries including fintech, healthcare, and retail." },
+  { q: "Is my company a good fit for Recodey?", a: "Yes. Our bespoke AI solutions cater to a wide range of industries including fintech, healthcare, and retail." },
   { q: "How long does implementation take?", a: "Depending on complexity, standard implementations take 2–4 weeks. Dedicated LLM models may take longer." },
   { q: "Are your solutions secure?", a: "Absolutely. We enforce SOC-2 compliance across all environments." },
   { q: "Can I get more than 3 developers?", a: "Yes, you can scale your dedicated team on-demand through our enterprise plan." },

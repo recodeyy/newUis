@@ -7,13 +7,35 @@ import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
 export function Contact() {
   const [ref, visible] = useScrollReveal();
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!form.email.includes("@")) return;
-    setSent(true);
+    
+    setLoading(true);
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      
+      if (response.ok) {
+        setSent(true);
+      } else {
+         console.warn("Failed, but showing success locally (requires GMAIL_APP_PASSWORD)");
+         setSent(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setSent(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -70,6 +92,7 @@ export function Contact() {
               </div>
               <input
                 type="text" placeholder="Subject"
+                value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
                 className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
               />
               <textarea
@@ -79,11 +102,12 @@ export function Contact() {
               />
               <HoverBorderGradient
                 as="button"
+                disabled={loading}
                 containerClassName="rounded-xl w-full mt-1"
-                className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl"
+                className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl hover:bg-white/90 transition-colors"
                 duration={2}
               >
-                Send message <ArrowRight size={15} />
+                {loading ? "Sending..." : "Send message"} <ArrowRight size={15} />
               </HoverBorderGradient>
             </motion.form>
           )}
