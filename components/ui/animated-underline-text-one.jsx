@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const AnimatedText = React.forwardRef(
@@ -37,13 +37,13 @@ const AnimatedText = React.forwardRef(
         ref={ref}
         className={cn("flex flex-col items-center justify-center gap-2", props.className)}
       >
-        <motion.div 
+        <m.div 
           className="relative group cursor-pointer"
           whileHover="hover"
           initial="hidden"
           animate="visible"
         >
-          <motion.h1
+          <m.h1
             className={cn("text-4xl font-bold text-center transition-all duration-300", textClassName)}
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -56,15 +56,15 @@ const AnimatedText = React.forwardRef(
             }}
           >
             {text}
-          </motion.h1>
+          </m.h1>
 
-          <motion.svg
+          <m.svg
             width="100%"
             height="20"
             viewBox="0 0 300 20"
             className={cn("absolute -bottom-2 left-0 w-full overflow-visible", underlineClassName)}
           >
-            <motion.path
+            <m.path
               d={underlinePath}
               stroke="currentColor"
               strokeWidth="4"
@@ -78,8 +78,8 @@ const AnimatedText = React.forwardRef(
                 transition: { duration: 0.8 },
               }}
             />
-          </motion.svg>
-        </motion.div>
+          </m.svg>
+        </m.div>
       </div>
     );
   }

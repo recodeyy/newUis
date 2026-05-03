@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import AnoAI from "@/components/ui/animated-shader-background";
 import { ArrowRight, Lock, Mail, User, Shield, BriefcaseBusiness, CheckCircle2 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -25,7 +25,7 @@ export default function RegisterPage() {
       {/* Main Container */}
       <div className="relative z-10 w-full max-w-[460px] px-6">
         
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
@@ -61,7 +61,7 @@ export default function RegisterPage() {
             
             <AnimatePresence mode="wait">
               {step === 1 && (
-                <motion.div key="step1" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
+                <m.div key="step1" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
                   <div className="flex gap-4">
                     <div className="relative w-full">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
@@ -75,11 +75,11 @@ export default function RegisterPage() {
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                     <input type="email" required placeholder="name@company.com" className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 text-[15px] font-medium text-white placeholder:text-white/20 focus:outline-none focus:border-[#b4f481]/50 transition-colors" />
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {step === 2 && (
-                <motion.div key="step2" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
+                <m.div key="step2" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
                   <div className="relative">
                     <BriefcaseBusiness className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                     <input type="text" required placeholder="Company Name" className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 text-[15px] font-medium text-white placeholder:text-white/20 focus:outline-none focus:border-[#b4f481]/50 transition-colors" />
@@ -93,11 +93,11 @@ export default function RegisterPage() {
                        <option value="200+">200+ employees</option>
                     </select>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {step === 3 && (
-                <motion.div key="step3" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
+                <m.div key="step3" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} className="flex flex-col gap-4">
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                     <input type="password" required placeholder="••••••••" className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 text-[15px] font-medium text-white placeholder:text-white/20 focus:outline-none focus:border-[#b4f481]/50 transition-colors" />
@@ -106,7 +106,7 @@ export default function RegisterPage() {
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30" />
                     <input type="password" required placeholder="Confirm password" className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 text-[15px] font-medium text-white placeholder:text-white/20 focus:outline-none focus:border-[#b4f481]/50 transition-colors" />
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
 
@@ -130,7 +130,7 @@ export default function RegisterPage() {
             Already have an account? <a href="/login" className="text-white hover:text-[#b4f481] font-medium">Log in</a>
           </p>
 
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

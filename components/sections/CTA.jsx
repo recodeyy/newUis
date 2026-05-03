@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
+import Image from "next/image";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { Plus, Minus } from "lucide-react";
 
@@ -30,22 +31,22 @@ export function CTA() {
       <section id="reviews" ref={ref} className="py-28 bg-black border-t border-white/5">
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
             className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4 text-center"
           >
             What clients say
-          </motion.p>
-          <motion.h2
+          </m.p>
+          <m.h2
             initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 }}
             className="text-[clamp(36px,6vw,64px)] font-bold text-white tracking-[-0.04em] leading-[1.05] mb-16 text-center"
           >
             Trusted by <span className="text-blue-400">innovators</span>.
-          </motion.h2>
+          </m.h2>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {REVIEWS.map((r, i) => (
-              <motion.div
+              <m.div
                 key={i}
                 initial={{ opacity: 0, y: 24 }}
                 animate={visible ? { opacity: 1, y: 0 } : {}}
@@ -63,15 +64,21 @@ export function CTA() {
                 </div>
                 {/* Person */}
                 <div className="flex items-center gap-3 pt-5 border-t border-white/5 mt-5">
-                  <div className="w-8 h-8 rounded-full bg-white/10 shrink-0 overflow-hidden">
-                    <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${r.name}`} alt={r.name} className="w-full h-full object-cover opacity-70" />
+                  <div className="w-8 h-8 rounded-full bg-white/10 shrink-0 overflow-hidden relative">
+                    <Image 
+                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${r.name}`} 
+                      alt={r.name} 
+                      width={32}
+                      height={32}
+                      className="object-cover opacity-70" 
+                    />
                   </div>
                   <div>
                     <div className="text-[13px] font-semibold text-white">{r.name}</div>
                     <div className="text-[11px] text-white/30">{r.role} · {r.company}</div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ))}
           </div>
         </div>

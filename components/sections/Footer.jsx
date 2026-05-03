@@ -18,7 +18,15 @@ export function Footer() {
              <div className="text-[12px] font-medium text-[#93c5fd] underline underline-offset-4 decoration-white/20 mb-6">Socials</div>
              <div className="flex flex-col gap-3">
                {["Instagram", "Twitter", "LinkedIn", "Facebook"].map((s) => (
-                  <a href="#" key={s} className="text-[13px] text-white/50 hover:text-white transition-colors">{s}</a>
+                  <a 
+                    href="#" 
+                    key={s} 
+                    aria-label={`Follow us on ${s}`}
+                    title={s}
+                    className="text-[13px] text-white/50 hover:text-white transition-colors"
+                  >
+                    {s}
+                  </a>
                ))}
              </div>
           </div>

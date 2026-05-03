@@ -1,30 +1,47 @@
 "use client";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { HoverBorderGradient } from "../ui/hover-border-gradient";
 
-export function Navbar({ scrollY }) {
-  const scrolled = scrollY > 20;
+export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [active, setActive] = useState("services");
 
-  // Auto-highlight active section based on scroll position
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 20 && !scrolled) {
+      setScrolled(true);
+    } else if (latest <= 20 && scrolled) {
+      setScrolled(false);
+    }
+  });
+
+  // Auto-highlight active section based on IntersectionObserver
   useEffect(() => {
     const sections = ["services", "process", "reviews", "faq", "contact"];
-    const onScroll = () => {
-      for (const id of sections) {
-        const el = document.getElementById(id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= 120 && rect.bottom >= 120) {
-          setActive(id);
-          break;
-        }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "-20% 0px -60% 0px",
+        threshold: 0,
       }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    );
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const links = [
@@ -36,7 +53,7 @@ export function Navbar({ scrollY }) {
   ];
 
   return (
-    <nav className={`fixed left-0 w-full z-[100] pointer-events-none transition-all duration-500 ease-out ${scrolled ? "top-4" : "top-8"}`}>
+    <nav className={`fixed top-8 left-0 w-full z-[100] pointer-events-none transition-transform duration-500 ease-out ${scrolled ? "-translate-y-4" : "translate-y-0"}`}>
       <div className="flex items-center justify-between max-w-[1400px] mx-auto px-6 md:px-10">
 
         {/* ── Logo ── */}
@@ -63,7 +80,7 @@ export function Navbar({ scrollY }) {
                   {label}
                 </a>
                 {active === id && (
-                  <motion.div
+                  <m.div
                     layoutId="pill-active"
                     className="absolute inset-0 bg-[#b4f481] rounded-full"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -92,6 +109,7 @@ export function Navbar({ scrollY }) {
 
         {/* ── Mobile hamburger ── */}
         <button
+          aria-label="Toggle Menu"
           className="pointer-events-auto md:hidden text-white/60 hover:text-white z-50"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
@@ -102,7 +120,7 @@ export function Navbar({ scrollY }) {
       {/* ── Mobile full-screen menu ── */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
@@ -130,7 +148,7 @@ export function Navbar({ scrollY }) {
                 Get started
               </button>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </nav>

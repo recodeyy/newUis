@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 const movingMap = {
@@ -61,7 +61,7 @@ export function HoverBorderGradient({
       >
         {children}
       </div>
-      <motion.div
+      <m.div
         className="absolute inset-0 z-0 flex-none overflow-hidden rounded-[inherit]"
         style={{
           filter: 'blur(2px)',

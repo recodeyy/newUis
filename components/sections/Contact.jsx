@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { ArrowRight } from "lucide-react";
 import { HoverBorderGradient } from "../ui/hover-border-gradient";
@@ -44,36 +44,36 @@ export function Contact() {
       <section id="contact" ref={ref} className="py-28 bg-black border-t border-white/5">
         <div className="max-w-[560px] mx-auto px-6 md:px-10 text-center">
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
             className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4"
           >
             Get in touch
-          </motion.p>
-          <motion.h2
+          </m.p>
+          <m.h2
             initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 }}
             className="text-[clamp(32px,5vw,52px)] font-bold text-white tracking-[-0.04em] leading-[1.1] mb-3"
           >
             Contact Us.
-          </motion.h2>
-          <motion.p
+          </m.h2>
+          <m.p
             initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.1 }}
             className="text-[14px] text-white/35 mb-12"
           >
             We reply within 24 hours.
-          </motion.p>
+          </m.p>
 
           {sent ? (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
               className="py-12 text-center"
             >
               <div className="text-[40px] mb-4">✓</div>
               <div className="text-[18px] font-semibold text-white mb-2">Message sent!</div>
               <div className="text-[14px] text-white/40">We'll be in touch soon.</div>
-            </motion.div>
+            </m.div>
           ) : (
-            <motion.form
+            <m.form
               initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.15 }}
               onSubmit={handleSend}
               className="flex flex-col gap-3 text-left"
@@ -81,27 +81,32 @@ export function Contact() {
               <div className="grid grid-cols-2 gap-3">
                 <input
                   type="text" placeholder="First name"
+                  aria-label="First name"
                   value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
                   className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
                 />
                 <input
                   type="email" placeholder="Email address"
+                  aria-label="Email address"
                   value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
                   className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
                 />
               </div>
               <input
                 type="text" placeholder="Subject"
+                aria-label="Subject"
                 value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
                 className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
               />
               <textarea
                 rows={5} placeholder="What can we help you with?"
+                aria-label="Message"
                 value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
                 className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors resize-none"
               />
               <HoverBorderGradient
                 as="button"
+                aria-label="Send message"
                 disabled={loading}
                 containerClassName="rounded-xl w-full mt-1"
                 className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl hover:bg-white/90 transition-colors"
@@ -109,7 +114,7 @@ export function Contact() {
               >
                 {loading ? "Sending..." : "Send message"} <ArrowRight size={15} />
               </HoverBorderGradient>
-            </motion.form>
+            </m.form>
           )}
         </div>
       </section>
@@ -128,9 +133,13 @@ export function Contact() {
           <div className="flex items-center gap-2">
             <input
               type="email" placeholder="name@email.com"
+              aria-label="Newsletter email"
               className="flex-grow bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
             />
-            <button className="bg-white text-black text-[13px] font-semibold px-5 py-3 rounded-xl hover:bg-white/90 transition-colors whitespace-nowrap">
+            <button 
+              aria-label="Subscribe to newsletter"
+              className="bg-white text-black text-[13px] font-semibold px-5 py-3 rounded-xl hover:bg-white/90 transition-colors whitespace-nowrap"
+            >
               Subscribe
             </button>
           </div>

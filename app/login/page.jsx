@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import AnoAI from "@/components/ui/animated-shader-background";
 import { ArrowRight, Lock, Mail, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function LoginPage() {
       {/* Main Container */}
       <div className="relative z-10 w-full max-w-md px-6">
         
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -97,7 +97,7 @@ export default function LoginPage() {
             Don't have an account? <a href="/register" className="text-blue-400 hover:text-blue-300 font-medium">Sign up</a>
           </p>
 
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );
