@@ -1,120 +1,88 @@
 "use client";
-import { useState } from "react";
-import { m } from "framer-motion";
-import Image from "next/image";
-import { useScrollReveal } from "../hooks/useScrollReveal";
-import { Plus, Minus } from "lucide-react";
+import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import MagneticButton from '../MagneticButton';
 
-const REVIEWS = [
-  { text: "Recodey's AI solutions save us a ton of money on a monthly basis. Highly recommend working with them.", name: "David Williams", role: "CTO", company: "Wave" },
-  { text: "Recodey has significantly enhanced our efficiency, resulting in the completion of more work every day.", name: "Jessica Miller", role: "CCO", company: "Kama Inc." },
-  { text: "Highly recommended Recodey's AI consultancy for any data-intensive business.", name: "Michael Anderson", role: "CEO", company: "Verdant Inc." },
-  { text: "A game-changer for any company looking to leverage AI in a meaningful way.", name: "Olivia Johnson", role: "CPO", company: "Nova Innovations" },
-];
+gsap.registerPlugin(ScrollTrigger);
 
-const FAQS = [
-  { q: "Is my company a good fit for Recodey?", a: "Yes. Our bespoke AI solutions cater to a wide range of industries including fintech, healthcare, and retail." },
-  { q: "How long does implementation take?", a: "Depending on complexity, standard implementations take 2–4 weeks. Dedicated LLM models may take longer." },
-  { q: "Are your solutions secure?", a: "Absolutely. We enforce SOC-2 compliance across all environments." },
-  { q: "Can I get more than 3 developers?", a: "Yes, you can scale your dedicated team on-demand through our enterprise plan." },
-  { q: "Do you offer continuous support?", a: "We provide 24/7 SLA-backed support for all deployed production environments." },
-  { q: "Can I cancel my subscription at any time?", a: "Yes, our retainers operate on a rolling monthly basis with no lock-ins." },
-];
+export default function CTA({ onOpenContact }) {
+  const ref = useRef(null);
+  const hRef = useRef(null);
 
-export function CTA() {
-  const [ref, visible] = useScrollReveal();
-  const [openFAQ, setOpenFAQ] = useState(null);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const label = ref.current?.querySelector('[data-label]');
+      if (label) gsap.fromTo(label, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: label, start: 'top 90%' } });
+
+      if (hRef.current) {
+        const words = hRef.current.querySelectorAll('[data-word]');
+        gsap.fromTo(words, { y: 100, opacity: 0, rotateX: -40, scale: 0.9 }, {
+          y: 0, opacity: 1, rotateX: 0, scale: 1,
+          duration: 1.6, stagger: 0.1, ease: 'power4.out',
+          scrollTrigger: { trigger: hRef.current, start: 'top 85%' },
+        });
+      }
+
+      const actions = ref.current?.querySelector('[data-actions]');
+      if (actions) gsap.fromTo(actions, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: actions, start: 'top 90%' } });
+    }, ref);
+    return () => ctx.revert();
+  }, []);
+
+  const heading = ["ESTABLISH", "NEW DEFAULTS."];
 
   return (
-    <>
-      {/* ── Reviews ── */}
-      <section id="reviews" ref={ref} className="py-28 bg-black border-t border-white/5">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-10">
+    <section ref={ref} id="contact-section" data-section className="min-h-screen px-6 md:px-12 lg:px-20 py-32 relative overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 bg-bg-elevated" />
+      <div className="absolute inset-0 grid-overlay opacity-20 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/[0.04] rounded-full blur-[200px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-accent/[0.02] skew-x-12 translate-x-1/2 pointer-events-none" />
 
-          <m.p
-            initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
-            className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4 text-center"
-          >
-            What clients say
-          </m.p>
-          <m.h2
-            initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-[clamp(36px,6vw,64px)] font-bold text-white tracking-[-0.04em] leading-[1.05] mb-16 text-center"
-          >
-            Trusted by <span className="text-blue-400">innovators</span>.
-          </m.h2>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {REVIEWS.map((r, i) => (
-              <m.div
-                key={i}
-                initial={{ opacity: 0, y: 24 }}
-                animate={visible ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
-                className="bg-[#0a0a0a] border border-white/[0.07] rounded-2xl p-6 flex flex-col justify-between min-h-[240px] hover:border-white/[0.12] transition-colors"
-              >
-                {/* Stars */}
-                <div>
-                  <div className="flex gap-0.5 mb-4">
-                    {[...Array(5)].map((_, j) => (
-                      <svg key={j} width="12" height="12" viewBox="0 0 24 24" fill="#b4f481"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
-                    ))}
-                  </div>
-                  <p className="text-[13.5px] text-white/55 leading-[1.7]">"{r.text}"</p>
-                </div>
-                {/* Person */}
-                <div className="flex items-center gap-3 pt-5 border-t border-white/5 mt-5">
-                  <div className="w-8 h-8 rounded-full bg-white/10 shrink-0 overflow-hidden relative">
-                    <Image 
-                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${r.name}`} 
-                      alt={r.name} 
-                      width={32}
-                      height={32}
-                      className="object-cover opacity-70" 
-                    />
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-semibold text-white">{r.name}</div>
-                    <div className="text-[11px] text-white/30">{r.role} · {r.company}</div>
-                  </div>
-                </div>
-              </m.div>
-            ))}
-          </div>
+      <div className="relative z-10 text-center max-w-5xl mx-auto">
+        <div data-label className="inline-flex items-center gap-4 mb-12 opacity-0">
+          <div className="w-8 h-[1px] bg-accent/50" />
+          <span className="text-mono text-[9px] text-accent tracking-[0.5em] uppercase">Initiate Transmission</span>
+          <div className="w-8 h-[1px] bg-accent/50" />
         </div>
-      </section>
 
-      {/* ── FAQ ── */}
-      <section id="faq" className="py-28 bg-black border-t border-white/5">
-        <div className="max-w-[800px] mx-auto px-6 md:px-10">
-
-          <div className="text-center mb-16">
-            <p className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4">Got questions?</p>
-            <h2 className="text-[clamp(36px,6vw,64px)] font-bold text-white tracking-[-0.04em] leading-[1.05]">
-              Answers<span className="text-blue-400">.</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-3">
-            {FAQS.map((f, i) => (
-              <div key={i} className="bg-[#0a0a0a] border border-white/[0.07] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-colors text-left">
-                <button
-                  onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
-                  className="w-full flex items-center justify-between gap-4 p-5 text-left"
-                >
-                  <span className="text-[13.5px] font-medium text-white/80 leading-snug">{f.q}</span>
-                  <span className="text-white/30 shrink-0">
-                    {openFAQ === i ? <Minus size={14} /> : <Plus size={14} />}
-                  </span>
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ${openFAQ === i ? "max-h-40" : "max-h-0"}`}>
-                  <p className="px-5 pb-5 text-[13px] text-white/40 leading-[1.7]">{f.a}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div ref={hRef} className="mb-16" style={{ perspective: '1000px' }}>
+          {heading.map((word, i) => (
+            <div key={i} className="overflow-hidden">
+              <h2 data-word className="text-display font-bold tracking-extratight leading-[0.85] opacity-0 origin-bottom" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>
+                {i === 1 ? <span className="text-accent glow-text">{word}</span> : word}
+              </h2>
+            </div>
+          ))}
         </div>
-      </section>
-    </>
+
+        <div data-actions className="flex flex-col md:flex-row gap-8 justify-center items-center opacity-0">
+          <MagneticButton strength={0.35}>
+            <motion.button
+              onClick={onOpenContact}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative group border border-accent text-accent px-12 py-5 text-mono text-[10px] tracking-[0.3em] uppercase overflow-hidden transition-colors hover:text-white"
+              data-cursor-hover
+            >
+              <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+              <span className="relative z-10">Start A Project</span>
+            </motion.button>
+          </MagneticButton>
+          <MagneticButton strength={0.2}>
+            <a href="mailto:recodeyy@gmail.com" className="text-display text-2xl md:text-3xl font-bold text-ink-muted hover:text-accent transition-colors duration-500 relative group" data-cursor-hover>
+              recodeyy@gmail.com
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            </a>
+          </MagneticButton>
+        </div>
+      </div>
+
+      <div className="absolute top-8 left-8 w-8 h-8 border-l border-t border-accent/10 pointer-events-none" />
+      <div className="absolute top-8 right-8 w-8 h-8 border-r border-t border-accent/10 pointer-events-none" />
+      <div className="absolute bottom-8 left-8 w-8 h-8 border-l border-b border-accent/10 pointer-events-none" />
+      <div className="absolute bottom-8 right-8 w-8 h-8 border-r border-b border-accent/10 pointer-events-none" />
+    </section>
   );
 }

@@ -1,156 +1,243 @@
 "use client";
-import { useState, useEffect } from "react";
-import { m, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { HoverBorderGradient } from "../ui/hover-border-gradient";
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Menu } from 'lucide-react';
 
-export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+import MagneticButton from '../MagneticButton';
+
+import { sounds } from '../sounds';
+
+export default function Nav({ onOpenContact, onLogoClick }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [active, setActive] = useState("services");
+  const [activeSection, setActiveSection] = useState('hero');
+  const [scrolled, setScrolled] = useState(false);
 
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 20 && !scrolled) {
-      setScrolled(true);
-    } else if (latest <= 20 && scrolled) {
-      setScrolled(false);
+  const handleClick = (e, href) => {
+    sounds?.playSelect();
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const el = document.getElementById(href.replace('#', ''));
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
-  });
+  };
 
-  // Auto-highlight active section based on IntersectionObserver
-  useEffect(() => {
-    const sections = ["services", "process", "reviews", "faq", "contact"];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-          }
-        });
-      },
-      {
-        root: null,
-        rootMargin: "-20% 0px -60% 0px",
-        threshold: 0,
-      }
-    );
-
-    sections.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const links = [
-    { label: "Services", id: "services" },
-    { label: "Process", id: "process" },
-    { label: "Reviews", id: "reviews" },
-    { label: "FAQ", id: "faq" },
-    { label: "Contact", id: "contact" },
+  const navLinks = [
+    { href: "#hero", label: "Story", num: "001" },
+    { href: "#about", label: "Protocol", num: "002" },
+    { href: "#projects", label: "Systems", num: "003" },
+    { href: "#services", label: "Capabilities", num: "004" },
+    { href: "#story", label: "Origin", num: "005" },
+    { href: "#insights", label: "Journal", num: "006" },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      
+      // Detect active section
+      const sections = navLinks.map(l => l.href.replace('#', ''));
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight / 2) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const currentPage = navLinks.find(l => l.href === `#${activeSection}`);
+
   return (
-    <nav className={`fixed top-8 left-0 w-full z-[100] pointer-events-none transition-transform duration-500 ease-out ${scrolled ? "-translate-y-4" : "translate-y-0"}`}>
-      <div className="flex items-center justify-between max-w-[1400px] mx-auto px-6 md:px-10">
+    <>
+      {/* Logo — top left */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5, duration: 1 }}
+        className="fixed top-6 left-6 md:top-8 md:left-8 z-[5000] pointer-events-auto"
+      >
+        <MagneticButton strength={0.2}>
+          <div 
+            className="flex items-center gap-3 cursor-pointer group" 
+            onClick={(e) => {
+              sounds?.playSelect();
+              if (onLogoClick) {
+                onLogoClick();
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
+            <div className="w-8 h-8 border border-accent/50 flex items-center justify-center relative group-hover:border-accent transition-colors">
+              <span className="text-accent text-mono text-[10px] font-bold">R</span>
+              <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <span className="text-display font-bold text-sm tracking-tight text-ink hidden md:block group-hover:text-accent transition-colors">
+              RECODEY
+            </span>
+          </div>
+        </MagneticButton>
+      </motion.div>
 
-        {/* ── Logo ── */}
-        <div className="pointer-events-auto flex items-center gap-2 cursor-pointer z-50 shrink-0 md:w-[240px]">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-          </svg>
-          <span className="text-white font-semibold text-[18px] tracking-tight">Recodey</span>
-        </div>
+      {/* Side navigation — right side (desktop) */}
+      <motion.nav
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.8, duration: 1 }}
+        className="fixed right-6 md:right-8 top-1/2 -translate-y-1/2 z-[5000] hidden md:flex flex-col items-end gap-1 pointer-events-auto"
+      >
+        {navLinks.map((link, i) => {
+          const isActive = activeSection === link.href.replace('#', '');
+          return (
+            <MagneticButton key={link.href} strength={0.15}>
+              <motion.a
+                href={link.href}
+                onClick={(e) => handleClick(e, link.href)}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.9 + i * 0.08 }}
+                className={`group flex items-center gap-3 py-1.5 transition-all duration-300 ${
+                  isActive ? 'text-accent' : 'text-ink-muted hover:text-ink'
+                }`}
+              >
+                <span className={`text-mono text-[8px] tracking-[0.3em] uppercase transition-opacity duration-300 ${
+                  isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
+                  {link.num}
+                </span>
+                <span className="text-mono text-[10px] tracking-[0.15em] uppercase">
+                  {link.label}
+                </span>
+                <div className={`h-[1px] transition-all duration-500 ${
+                  isActive ? 'w-6 bg-accent' : 'w-0 group-hover:w-3 bg-ink-muted'
+                }`} />
+              </motion.a>
+            </MagneticButton>
+          );
+        })}
 
-        {/* ── Floating Center Pill ── */}
-        <div className="hidden lg:flex flex-1 justify-center items-center overflow-hidden">
-          <div className="pointer-events-auto flex items-center gap-1 xl:gap-2 bg-[#0e0e0e]/95 backdrop-blur-xl border border-white/[0.07] rounded-full p-1.5 xl:p-2 w-max shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_8px_40px_rgba(0,0,0,0.7)] flex-nowrap">
-            {links.map(({ label, id }) => (
-              <div key={id} className="relative z-10 flex shrink-0">
-                <a
-                  href={`#${id}`}
-                  onClick={() => setActive(id)}
-                  className={`relative flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-[14px] xl:text-[16px] font-medium rounded-full transition-colors duration-200 whitespace-nowrap z-10 ${active === id
-                      ? "text-black"
-                      : "text-white/60 hover:text-white"
-                    }`}
-                >
-                  {label}
-                </a>
-                {active === id && (
-                  <m.div
-                    layoutId="pill-active"
-                    className="absolute inset-0 bg-[#b4f481] rounded-full"
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    style={{ zIndex: 0 }}
-                  />
-                )}
-              </div>
-            ))}
+        {/* Divider */}
+        <div className="w-[1px] h-4 bg-border my-2" />
+
+        {/* Social links */}
+        {[
+          { label: "Twitter", href: "https://x.com/recodeyy" },
+          { label: "LinkedIn", href: "https://linkedin.com/company/recodey" },
+        ].map((social) => (
+          <a
+            key={social.label}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-mono text-[8px] tracking-[0.15em] uppercase text-ink-muted hover:text-accent transition-colors py-0.5"
+          >
+            {social.label}
+          </a>
+        ))}
+
+        {/* Divider */}
+        <div className="w-[1px] h-4 bg-border my-2" />
+
+        {/* Gallery link */}
+        <a
+          href="/gallery"
+          className="text-mono text-[9px] tracking-[0.15em] uppercase text-ink-muted hover:text-accent transition-colors py-0.5"
+        >
+          Gallery
+        </a>
+
+        {/* Divider */}
+        <div className="w-[1px] h-4 bg-border my-2" />
+
+        {/* Contact */}
+        <button
+          onClick={onOpenContact}
+          className="text-mono text-[9px] tracking-[0.2em] uppercase text-accent hover:text-accent-secondary transition-colors py-1 glow-text-subtle"
+        >
+          Connect
+        </button>
+
+        {/* Page indicator */}
+        <div className="mt-4 text-right">
+          <div className="text-mono text-[8px] tracking-[0.3em] uppercase text-ink-muted">PAGE</div>
+          <div className="text-display text-2xl font-bold text-accent leading-none mt-1">
+            {currentPage?.num || '001'}
           </div>
         </div>
+      </motion.nav>
 
-        {/* ── Right CTAs ── */}
-        <div className="pointer-events-auto hidden md:flex items-center justify-end gap-2 xl:gap-4 z-50 shrink-0 md:w-[240px]">
-          <a href="/login" className="flex items-center justify-center px-4 xl:px-6 py-2 xl:py-2.5 text-white/60 hover:text-white text-[14px] xl:text-[16px] font-medium rounded-full transition-colors whitespace-nowrap">
-            Log in
-          </a>
-          <HoverBorderGradient
-            as="div"
-            containerClassName="rounded-full cursor-pointer"
-            className="rounded-full px-0 py-0"
-            duration={2}
-          >
-            <a href="/register" className="flex items-center justify-center px-5 xl:px-8 py-2 xl:py-2.5 bg-black text-[#b4f481] text-[14px] xl:text-[16px] font-medium rounded-full whitespace-nowrap">Get started</a>
-          </HoverBorderGradient>
-        </div>
-
-        {/* ── Mobile hamburger ── */}
+      {/* Mobile hamburger */}
+      <div className="fixed top-6 right-6 z-[5001] block md:hidden pointer-events-auto">
         <button
-          aria-label="Toggle Menu"
-          className="pointer-events-auto md:hidden text-white/60 hover:text-white z-50"
+          aria-label="Toggle mobile menu"
           onClick={() => setMobileOpen(!mobileOpen)}
+          className="w-10 h-10 border border-accent/30 flex items-center justify-center bg-bg/80 backdrop-blur-sm"
         >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          {mobileOpen ? <X className="w-4 h-4 text-accent" /> : <Menu className="w-4 h-4 text-ink" />}
         </button>
       </div>
 
-      {/* ── Mobile full-screen menu ── */}
+      {/* Mobile Full-Screen Menu */}
       <AnimatePresence>
         {mobileOpen && (
-          <m.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="pointer-events-auto md:hidden absolute top-0 left-0 w-full h-screen bg-black/98 backdrop-blur-xl z-40 flex flex-col pt-24 px-8"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[5000] bg-bg flex flex-col items-center justify-center gap-6"
           >
-            <div className="flex flex-col gap-2">
-              {links.map(({ label, id }) => (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  onClick={() => { setActive(id); setMobileOpen(false); }}
-                  className={`py-3 text-xl font-medium transition-colors border-b border-white/5 ${active === id ? "text-[#b4f481]" : "text-white/50 hover:text-white"
-                    }`}
-                >
-                  {label}
-                </a>
-              ))}
-            </div>
-            <div className="mt-8 flex flex-col gap-3">
-              <button className="w-full py-3 text-white/80 border border-white/10 rounded-xl text-sm font-medium hover:bg-white/5 transition-colors">
-                Log in
-              </button>
-              <button className="w-full py-3 border border-[#b4f481] text-[#b4f481] rounded-xl text-sm font-medium hover:bg-[#b4f481]/10 transition-colors">
-                Get started
-              </button>
-            </div>
-          </m.div>
+            {/* Background grid */}
+            <div className="absolute inset-0 grid-overlay opacity-20 pointer-events-none" />
+            
+            {navLinks.map((link, i) => (
+              <motion.a
+                key={link.href}
+                href={link.href}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.06, duration: 0.5 }}
+                onClick={() => setMobileOpen(false)}
+                className="group flex items-center gap-6 relative"
+              >
+                <span className="text-mono text-[9px] text-accent/40 tracking-widest">{link.num}</span>
+                <span className="text-display text-3xl font-bold tracking-tight text-ink hover:text-accent transition-colors">
+                  {link.label}
+                </span>
+              </motion.a>
+            ))}
+
+            <motion.a
+              href="/gallery"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + navLinks.length * 0.06, duration: 0.5 }}
+              onClick={() => {
+                sounds?.playSelect();
+                setMobileOpen(false);
+              }}
+              className="group flex items-center gap-6 relative"
+            >
+              <span className="text-mono text-[9px] text-accent/40 tracking-widest">007</span>
+              <span className="text-display text-3xl font-bold tracking-tight text-accent hover:text-accent-secondary transition-colors">
+                GALLERY
+              </span>
+            </motion.a>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              onClick={() => { setMobileOpen(false); onOpenContact(); }}
+              className="mt-8 border border-accent text-accent px-10 py-3 text-mono text-[10px] font-bold tracking-widest hover:bg-accent hover:text-white transition-all"
+            >
+              INITIATE TRANSMISSION
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }

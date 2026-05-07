@@ -1,150 +1,163 @@
 "use client";
-import { useState } from "react";
-import { m } from "framer-motion";
-import { useScrollReveal } from "../hooks/useScrollReveal";
-import { ArrowRight } from "lucide-react";
-import { HoverBorderGradient } from "../ui/hover-border-gradient";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ArrowRight, Send } from 'lucide-react';
 
-export function Contact() {
-  const [ref, visible] = useScrollReveal();
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
+export default function ContactModal({ isOpen, onClose }) {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '', project: '' });
+  const [status, setStatus] = useState('idle');
 
-  const handleSend = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.email.includes("@")) return;
-    
-    setLoading(true);
-    
+    setStatus('sending');
     try {
-      const response = await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify(formData),
       });
-      
-      if (response.ok) {
-        setSent(true);
+      if (res.ok) {
+        setStatus('sent');
+        setFormData({ name: '', email: '', message: '', project: '' });
+        setTimeout(() => { setStatus('idle'); onClose(); }, 2000);
       } else {
-         console.warn("Failed, but showing success locally (requires GMAIL_APP_PASSWORD)");
-         setSent(true);
+        setStatus('error');
       }
-    } catch (err) {
-      console.error(err);
-      setSent(true);
-    } finally {
-      setLoading(false);
+    } catch {
+      setStatus('error');
     }
   };
 
   return (
-    <>
-      {/* Contact — centered like wireframe */}
-      <section id="contact" ref={ref} className="py-28 bg-black border-t border-white/5">
-        <div className="max-w-[560px] mx-auto px-6 md:px-10 text-center">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+          className="fixed inset-0 z-[6000] flex items-center justify-center p-4"
+        >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-bg/90 backdrop-blur-sm"
+            onClick={onClose}
+          />
 
-          <m.p
-            initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
-            className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4"
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 40, scale: 0.95 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-2xl bg-bg-elevated border border-border p-8 md:p-12 z-10"
           >
-            Get in touch
-          </m.p>
-          <m.h2
-            initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.05 }}
-            className="text-[clamp(32px,5vw,52px)] font-bold text-white tracking-[-0.04em] leading-[1.1] mb-3"
-          >
-            Contact Us.
-          </m.h2>
-          <m.p
-            initial={{ opacity: 0, y: 12 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-[14px] text-white/35 mb-12"
-          >
-            We reply within 24 hours.
-          </m.p>
+            {/* Grid overlay */}
+            <div className="absolute inset-0 grid-overlay opacity-10 pointer-events-none" />
+            
+            {/* Corner brackets */}
+            <div className="absolute top-3 left-3 w-5 h-5 border-l border-t border-accent/30" />
+            <div className="absolute top-3 right-3 w-5 h-5 border-r border-t border-accent/30" />
+            <div className="absolute bottom-3 left-3 w-5 h-5 border-l border-b border-accent/30" />
+            <div className="absolute bottom-3 right-3 w-5 h-5 border-r border-b border-accent/30" />
 
-          {sent ? (
-            <m.div
-              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              className="py-12 text-center"
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-6 right-6 w-8 h-8 border border-border flex items-center justify-center hover:border-accent hover:text-accent transition-colors z-10"
             >
-              <div className="text-[40px] mb-4">✓</div>
-              <div className="text-[18px] font-semibold text-white mb-2">Message sent!</div>
-              <div className="text-[14px] text-white/40">We'll be in touch soon.</div>
-            </m.div>
-          ) : (
-            <m.form
-              initial={{ opacity: 0, y: 16 }} animate={visible ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.15 }}
-              onSubmit={handleSend}
-              className="flex flex-col gap-3 text-left"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text" placeholder="First name"
-                  aria-label="First name"
-                  value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
-                />
-                <input
-                  type="email" placeholder="Email address"
-                  aria-label="Email address"
-                  value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                  className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
-                />
-              </div>
-              <input
-                type="text" placeholder="Subject"
-                aria-label="Subject"
-                value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
-                className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
-              />
-              <textarea
-                rows={5} placeholder="What can we help you with?"
-                aria-label="Message"
-                value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
-                className="bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors resize-none"
-              />
-              <HoverBorderGradient
-                as="button"
-                aria-label="Send message"
-                disabled={loading}
-                containerClassName="rounded-xl w-full mt-1"
-                className="w-full flex items-center justify-center gap-2 bg-white text-black text-[14px] font-semibold py-3.5 rounded-xl hover:bg-white/90 transition-colors"
-                duration={2}
-              >
-                {loading ? "Sending..." : "Send message"} <ArrowRight size={15} />
-              </HoverBorderGradient>
-            </m.form>
-          )}
-        </div>
-      </section>
-
-      {/* Newsletter — centered like wireframe */}
-      <section className="py-24 bg-black border-t border-white/5">
-        <div className="max-w-[480px] mx-auto px-6 text-center">
-          <p className="text-[12px] font-semibold tracking-[0.15em] uppercase text-white/30 mb-4">Stay informed</p>
-          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white tracking-[-0.04em] mb-3">
-            Get updates.
-          </h2>
-          <p className="text-[14px] text-white/35 mb-8">
-            Design moves. Get them in your inbox.
-          </p>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="email" placeholder="name@email.com"
-              aria-label="Newsletter email"
-              className="flex-grow bg-[#0d0d0d] border border-white/[0.08] rounded-xl px-4 py-3 text-[14px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
-            />
-            <button 
-              aria-label="Subscribe to newsletter"
-              className="bg-white text-black text-[13px] font-semibold px-5 py-3 rounded-xl hover:bg-white/90 transition-colors whitespace-nowrap"
-            >
-              Subscribe
+              <X className="w-4 h-4" />
             </button>
-          </div>
-        </div>
-      </section>
-    </>
+
+            <div className="relative z-10">
+              {/* Header */}
+              <div className="inline-flex items-center gap-3 mb-6">
+                <div className="w-6 h-[1px] bg-accent" />
+                <span className="text-mono text-[9px] uppercase tracking-[0.5em] text-accent">Initiate Contact</span>
+              </div>
+              <h2 className="text-display text-3xl md:text-5xl font-bold tracking-extratight mb-2">
+                LET&apos;S <span className="text-accent">BUILD.</span>
+              </h2>
+              <p className="text-ink-muted text-sm mb-10">
+                Transmit your project details. We&apos;ll respond within 24 hours.
+              </p>
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-mono text-[9px] uppercase tracking-[0.3em] text-ink-muted block mb-2">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-transparent border-b border-border focus:border-accent outline-none py-3 text-sm text-ink transition-colors placeholder:text-ink-muted"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-mono text-[9px] uppercase tracking-[0.3em] text-ink-muted block mb-2">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full bg-transparent border-b border-border focus:border-accent outline-none py-3 text-sm text-ink transition-colors placeholder:text-ink-muted"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-mono text-[9px] uppercase tracking-[0.3em] text-ink-muted block mb-2">Project Type</label>
+                  <input
+                    type="text"
+                    value={formData.project}
+                    onChange={(e) => setFormData({ ...formData, project: e.target.value })}
+                    className="w-full bg-transparent border-b border-border focus:border-accent outline-none py-3 text-sm text-ink transition-colors placeholder:text-ink-muted"
+                    placeholder="Web Platform / Brand Identity / AI Integration"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-mono text-[9px] uppercase tracking-[0.3em] text-ink-muted block mb-2">Message</label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full bg-transparent border-b border-border focus:border-accent outline-none py-3 text-sm text-ink transition-colors resize-none placeholder:text-ink-muted"
+                    placeholder="Describe your project..."
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-4">
+                  <div className="text-mono text-[9px] text-ink-muted tracking-widest">
+                    {status === 'sent' && <span className="text-terminal-green">✓ TRANSMISSION SENT</span>}
+                    {status === 'error' && <span className="text-red-400">✗ TRANSMISSION FAILED</span>}
+                    {status === 'sending' && <span className="text-accent animate-pulse">TRANSMITTING...</span>}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={status === 'sending'}
+                    className="group relative border border-accent text-accent px-8 py-3 text-mono text-[10px] tracking-[0.3em] uppercase overflow-hidden hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+                    <span className="relative z-10 flex items-center gap-2">
+                      Transmit
+                      <Send className="w-3 h-3" />
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
