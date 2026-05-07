@@ -73,6 +73,59 @@ class UISoundSystem {
     osc.start();
     osc.stop(this.context.currentTime + 0.05);
   }
+
+  startAmbientDrone() {
+    this.init();
+    if (!this.context || this.droneOsc1) return;
+
+    // Create sub-bass drone
+    this.droneOsc1 = this.context.createOscillator();
+    this.droneOsc2 = this.context.createOscillator();
+    this.droneGain = this.context.createGain();
+    this.droneFilter = this.context.createBiquadFilter();
+
+    this.droneOsc1.type = 'sine';
+    this.droneOsc1.frequency.setValueAtTime(50, this.context.currentTime);
+    
+    this.droneOsc2.type = 'triangle';
+    this.droneOsc2.frequency.setValueAtTime(50.5, this.context.currentTime); // Slight detune for phasing
+
+    this.droneFilter.type = 'lowpass';
+    this.droneFilter.frequency.setValueAtTime(200, this.context.currentTime);
+
+    this.droneGain.gain.setValueAtTime(0, this.context.currentTime);
+    this.droneGain.gain.linearRampToValueAtTime(0.015, this.context.currentTime + 4); // Slow fade in
+
+    this.droneOsc1.connect(this.droneFilter);
+    this.droneOsc2.connect(this.droneFilter);
+    this.droneFilter.connect(this.droneGain);
+    this.droneGain.connect(this.context.destination);
+
+    this.droneOsc1.start();
+    this.droneOsc2.start();
+
+    // Subtle breathing modulation
+    const mod = () => {
+      if (!this.droneGain) return;
+      const now = this.context.currentTime;
+      this.droneGain.gain.linearRampToValueAtTime(0.01 + Math.random() * 0.01, now + 3);
+      setTimeout(mod, 3000);
+    };
+    mod();
+  }
+
+  stopAmbientDrone() {
+    if (this.droneGain) {
+      this.droneGain.gain.linearRampToValueAtTime(0, this.context.currentTime + 2);
+      setTimeout(() => {
+        this.droneOsc1?.stop();
+        this.droneOsc2?.stop();
+        this.droneOsc1 = null;
+        this.droneOsc2 = null;
+        this.droneGain = null;
+      }, 2000);
+    }
+  }
 }
 
 export const sounds = typeof window !== 'undefined' ? new UISoundSystem() : null;

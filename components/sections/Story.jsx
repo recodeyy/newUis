@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -187,29 +188,126 @@ export default function Story() {
           </div>
         </div>
 
-        {/* Team */}
-        <div>
-          <h3 data-team-heading className="text-display text-3xl md:text-4xl font-bold tracking-extratight mb-16 opacity-0">
-            CORE <span className="text-accent">OPERATORS</span>
-          </h3>
+        {/* Secure Personnel Archive Terminal */}
+        <div className="pt-20 border-t border-accent/10">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
+            <h3 data-team-heading className="text-display text-3xl md:text-5xl font-black tracking-extratight opacity-0">
+              SECURE <span className="text-accent">PERSONNEL</span> ARCHIVE
+            </h3>
+            <div className="flex items-center gap-4 text-mono text-[9px] text-accent/40 tracking-[0.4em] uppercase font-bold">
+              <div className="w-2 h-2 bg-accent animate-pulse" />
+              CLEARANCE_LEVEL: TOP_SECRET
+            </div>
+          </div>
 
-          <div ref={teamRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {TEAM.map((member, i) => (
-              <div key={i} data-team-card className="group border border-border p-6 md:p-8 relative overflow-hidden hover:border-accent/30 transition-colors duration-500 opacity-0" data-cursor-hover>
-                <div className="absolute inset-0 bg-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                <div className="text-mono text-[9px] text-accent/40 tracking-[0.3em] mb-6">{member.num}</div>
-                <div className="w-16 h-16 border border-border mb-6 relative overflow-hidden group-hover:border-accent transition-colors duration-500">
-                  <Image
-                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${member.seed}&backgroundColor=transparent`}
-                    alt={member.name} fill
-                    className="object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 invert"
-                  />
+          <div ref={teamRef} className="grid grid-cols-1 lg:grid-cols-12 gap-0 border border-accent/10 bg-black/40 backdrop-blur-md relative overflow-hidden">
+            {/* Terminal Background Elements */}
+            <div className="absolute inset-0 grid-overlay opacity-[0.03] pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden opacity-5">
+              <div className="text-mono text-[50px] font-black text-accent absolute -bottom-10 -right-10 leading-none">CLASSIFIED</div>
+            </div>
+
+            {/* Operator Selection List */}
+            <div className="lg:col-span-4 border-r border-accent/10">
+              {TEAM.map((member, i) => (
+                <div 
+                  key={i} 
+                  data-team-card
+                  className="group relative border-b border-accent/10 p-8 cursor-pointer overflow-hidden opacity-0"
+                  onMouseEnter={() => {
+                    const dossier = document.getElementById(`dossier-${i}`);
+                    document.querySelectorAll('[id^="dossier-"]').forEach(d => d.style.opacity = 0);
+                    if (dossier) dossier.style.opacity = 1;
+                  }}
+                  data-cursor-snap
+                >
+                  <div className="absolute inset-0 bg-accent/5 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-mono text-[9px] text-accent/40 tracking-[0.3em] uppercase">RC_OPERATOR_{member.num}</span>
+                      <span className="text-display text-2xl font-black text-ink group-hover:text-accent transition-colors tracking-tighter">
+                        {member.name.split(' ')[0]}
+                      </span>
+                    </div>
+                    <div className="w-10 h-10 border border-accent/20 flex items-center justify-center group-hover:border-accent transition-colors">
+                      <ArrowRight className="w-4 h-4 text-accent/40 group-hover:text-accent transition-colors" />
+                    </div>
+                  </div>
                 </div>
-                <h4 className="text-display text-xl md:text-2xl font-bold tracking-extratight mb-1 group-hover:text-accent transition-colors">{member.name}</h4>
-                <div className="text-mono text-[9px] text-accent tracking-[0.2em] mb-6">{member.role}</div>
-                <p className="text-ink-muted text-sm leading-relaxed">{member.bio}</p>
+              ))}
+              <div className="p-8 text-mono text-[7px] text-accent/20 tracking-widest uppercase">
+                AWAITING_SELECTION...
               </div>
-            ))}
+            </div>
+
+            {/* Dossier Display Area */}
+            <div className="lg:col-span-8 relative min-h-[500px] lg:min-h-[600px] bg-bg/20">
+              {TEAM.map((member, i) => (
+                <div 
+                  key={i} 
+                  id={`dossier-${i}`}
+                  className={`relative lg:absolute inset-0 p-6 md:p-10 lg:p-16 transition-opacity duration-700 flex flex-col md:flex-row lg:flex-row gap-8 md:gap-12 ${i === 0 ? 'opacity-100' : 'opacity-0 lg:opacity-0 hidden lg:flex'}`}
+                  style={{ display: i === 0 ? 'flex' : undefined }}
+                >
+                  {/* Operator Portrait */}
+                  <div className="w-full md:w-1/3 lg:w-1/3">
+                    <div className="aspect-square border border-accent/20 relative group overflow-hidden bg-accent/5">
+                      <Image
+                        src={`https://api.dicebear.com/7.x/notionists/svg?seed=${member.seed}&backgroundColor=transparent`}
+                        alt={member.name} fill
+                        className="object-cover opacity-80 contrast-125 brightness-75 invert grayscale transition-all duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-60" />
+                      
+                      {/* Scanning Line */}
+                      <motion.div 
+                        animate={{ top: ['0%', '100%'] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-x-0 h-[2px] bg-accent/30 shadow-[0_0_10px_rgba(255,61,0,0.5)] z-20"
+                      />
+                      
+                      <div className="absolute bottom-4 left-4 z-20 text-mono text-[8px] text-accent bg-bg/80 px-2 py-1 border border-accent/20">
+                        OP_ARCHIVE_{member.num}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Operator Bio / Metadata */}
+                  <div className="flex-1">
+                    <div className="mb-6 lg:mb-8">
+                      <div className="text-mono text-[9px] md:text-[10px] text-accent tracking-[0.4em] uppercase mb-2">Subject_Profile</div>
+                      <h4 className="text-display text-3xl md:text-5xl lg:text-5xl font-black text-ink mb-1 uppercase tracking-tighter leading-tight">
+                        {member.name}
+                      </h4>
+                      <div className="text-mono text-[10px] md:text-[11px] text-accent/60 tracking-[0.2em] font-bold uppercase">
+                        {member.role}
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="p-4 border border-accent/10 bg-accent/[0.02]">
+                        <div className="text-mono text-[8px] text-accent/40 uppercase tracking-[0.3em] mb-3">Operational_Dossier</div>
+                        <p className="text-xs md:text-sm leading-relaxed text-ink-muted font-sans relative">
+                          {member.bio}
+                          <span className="inline-block ml-1 w-12 h-3 md:w-20 md:h-4 bg-ink/90 align-middle ml-2" />
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-6 lg:gap-8">
+                        <div>
+                          <div className="text-mono text-[7px] md:text-[8px] text-accent/30 uppercase tracking-[0.3em] mb-1">Status</div>
+                          <div className="text-mono text-[9px] md:text-[10px] text-[#00FF00] font-bold">ACTIVE_DUTY</div>
+                        </div>
+                        <div>
+                          <div className="text-mono text-[7px] md:text-[8px] text-accent/30 uppercase tracking-[0.3em] mb-1">Sector</div>
+                          <div className="text-mono text-[9px] md:text-[10px] text-ink font-bold uppercase tracking-widest">{member.role.split(' ')[0]}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

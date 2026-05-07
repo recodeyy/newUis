@@ -7,6 +7,29 @@ import Link from 'next/link';
 import { ArrowLeft, X } from 'lucide-react';
 import MagneticButton from '@/components/MagneticButton';
 
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+const DecryptText = ({ text, delay = 0, trigger = true }) => {
+  const [displayText, setDisplayText] = useState("");
+  useEffect(() => {
+    if (!trigger) return;
+    let timeout;
+    let frame = 0;
+    const animate = () => {
+      if (frame < 15) {
+        let random = "";
+        for (let i = 0; i < text.length; i++) random += CHARS[Math.floor(Math.random() * CHARS.length)];
+        setDisplayText(random);
+        frame++;
+        timeout = setTimeout(animate, 40);
+      } else setDisplayText(text);
+    };
+    const startTimeout = setTimeout(animate, delay);
+    return () => { clearTimeout(startTimeout); clearTimeout(timeout); };
+  }, [text, delay, trigger]);
+  return <span>{displayText || text}</span>;
+};
+
 gsap.registerPlugin(ScrollTrigger);
 
 const PROJECTS = [
@@ -70,11 +93,12 @@ function Lightbox({ project, onClose }) {
   );
 }
 
-export default function GalleryPage() {
-  const pageRef = useRef(null);
-  const gridRef = useRef(null);
-  const headingRef = useRef(null);
+export default function Gallery() {
   const [activeProject, setActiveProject] = useState(null);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const sectionRef = useRef(null);
+  const headingRef = useRef(null);
+  const gridRef = useRef(null);
   const [filter, setFilter] = useState('ALL');
 
   const categories = ['ALL', ...new Set(PROJECTS.map(p => p.category))];
@@ -87,16 +111,28 @@ export default function GalleryPage() {
         const chars = headingRef.current.querySelectorAll('[data-char]');
         gsap.fromTo(chars,
           { y: 100, opacity: 0, rotateX: -60 },
-          { y: 0, opacity: 1, rotateX: 0, duration: 1.4, stagger: 0.04, ease: 'power4.out', delay: 0.3 }
+          {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 1.4,
+            stagger: 0.05,
+            ease: 'power4.out',
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: 'top 85%',
+              onEnter: () => setIsRevealed(true)
+            },
+          }
         );
       }
 
       // Label
-      const label = pageRef.current?.querySelector('[data-label]');
+      const label = sectionRef.current?.querySelector('[data-label]');
       if (label) gsap.fromTo(label, { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.2 });
 
       // Filters
-      const filters = pageRef.current?.querySelector('[data-filters]');
+      const filters = sectionRef.current?.querySelector('[data-filters]');
       if (filters) gsap.fromTo(filters, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.5 });
 
       // Grid items
@@ -107,13 +143,13 @@ export default function GalleryPage() {
           { y: 0, opacity: 1, scale: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.6 }
         );
       }
-    }, pageRef);
+    }, sectionRef);
 
     return () => ctx.revert();
   }, [filter]);
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-bg selection:bg-accent selection:text-white">
+    <div ref={sectionRef} className="min-h-screen bg-bg selection:bg-accent selection:text-white">
       <div className="absolute inset-0 grid-overlay opacity-15 pointer-events-none fixed" />
 
       {/* Nav */}
@@ -144,9 +180,7 @@ export default function GalleryPage() {
             <span className="text-mono text-[9px] uppercase tracking-[0.5em] text-accent font-bold">Visual Archive</span>
           </div>
           <h1 ref={headingRef} className="text-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-extratight leading-none mb-8" style={{ perspective: '800px' }}>
-            {"GALLERY".split("").map((c, i) => (
-              <span key={i} data-char className={`inline-block origin-bottom opacity-0 ${i >= 3 ? 'text-accent glow-text-subtle' : ''}`}>{c}</span>
-            ))}
+            <DecryptText text="GALLERY" delay={400} trigger={isRevealed} />
           </h1>
           <p className="text-ink-muted text-lg max-w-xl">Selected work from our portfolio — engineered products, cinematic identities, and intelligent systems.</p>
         </div>

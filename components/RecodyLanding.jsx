@@ -25,34 +25,55 @@ import Preloader from './sections/Preloader';
 gsap.registerPlugin(ScrollTrigger);
 
 // --- Custom Cursor ---
+// --- Custom Cursor ---
 const CustomCursor = () => {
-  const ringX = useSpring(0, { damping: 20, stiffness: 300 });
-  const ringY = useSpring(0, { damping: 20, stiffness: 300 });
-  const dotX = useSpring(0, { damping: 40, stiffness: 500 });
-  const dotY = useSpring(0, { damping: 40, stiffness: 500 });
+  const ringX = useSpring(0, { damping: 25, stiffness: 400 });
+  const ringY = useSpring(0, { damping: 25, stiffness: 400 });
+  const dotX = useSpring(0, { damping: 40, stiffness: 600 });
+  const dotY = useSpring(0, { damping: 40, stiffness: 600 });
   const ringScale = useSpring(1, { damping: 20, stiffness: 300 });
+
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isSnapping, setIsSnapping] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      ringX.set(e.clientX);
-      ringY.set(e.clientY);
+      let targetX = e.clientX;
+      let targetY = e.clientY;
+
+      // Snapping logic for [data-cursor-hover] elements
+      const hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
+      const snapTarget = hoveredElement?.closest('[data-cursor-snap]');
+      
+      if (snapTarget) {
+        const rect = snapTarget.getBoundingClientRect();
+        targetX = rect.left + rect.width / 2;
+        targetY = rect.top + rect.height / 2;
+        setIsSnapping(true);
+        ringScale.set(1.5);
+      } else {
+        setIsSnapping(false);
+        // Standard hover scale handled by mouseEnter/Leave
+      }
+
+      ringX.set(targetX);
+      ringY.set(targetY);
       dotX.set(e.clientX);
       dotY.set(e.clientY);
+      setCoords({ x: e.clientX, y: e.clientY });
     };
 
     const handleMouseDown = () => ringScale.set(0.8);
     const handleMouseUp = () => ringScale.set(1);
 
-    // Expand cursor on hoverable elements
-    const handleMouseEnter = () => ringScale.set(1.8);
-    const handleMouseLeave = () => ringScale.set(1);
+    const handleMouseEnter = () => !isSnapping && ringScale.set(1.8);
+    const handleMouseLeave = () => !isSnapping && ringScale.set(1);
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
-    // Add hover detection for interactive elements
-    const interactives = document.querySelectorAll('a, button, [data-cursor-hover]');
+    const interactives = document.querySelectorAll('a, button, [data-cursor-hover], [data-cursor-snap]');
     interactives.forEach((el) => {
       el.addEventListener('mouseenter', handleMouseEnter);
       el.addEventListener('mouseleave', handleMouseLeave);
@@ -67,18 +88,41 @@ const CustomCursor = () => {
         el.removeEventListener('mouseleave', handleMouseLeave);
       });
     };
-  }, [ringX, ringY, dotX, dotY, ringScale]);
+  }, [ringX, ringY, dotX, dotY, ringScale, isSnapping]);
 
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-[36px] h-[36px] border border-accent/30 rounded-full pointer-events-none z-[10000] hidden md:block mix-blend-difference"
+        className="fixed top-0 left-0 w-[40px] h-[40px] border border-accent/40 rounded-full pointer-events-none z-[10000] hidden md:block mix-blend-difference"
         style={{ x: ringX, y: ringY, scale: ringScale, translateX: '-50%', translateY: '-50%' }}
-      />
+      >
+        {isSnapping && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="absolute inset-[-4px] border border-accent/20 rounded-full animate-ping"
+          />
+        )}
+      </motion.div>
       <motion.div
         className="fixed top-0 left-0 w-[4px] h-[4px] bg-accent rounded-full pointer-events-none z-[10000] hidden md:block"
         style={{ x: dotX, y: dotY, translateX: '-50%', translateY: '-50%' }}
       />
+      
+      {/* Cursor Metadata HUD */}
+      <motion.div
+        className="fixed top-0 left-0 pointer-events-none z-[10000] hidden md:block ml-8 mt-8"
+        style={{ x: dotX, y: dotY }}
+      >
+        <div className="flex flex-col gap-1 bg-bg/60 backdrop-blur-md border border-accent/10 px-2 py-1">
+          <div className="text-mono text-[7px] text-accent tracking-[0.3em] font-bold">
+            X_{coords.x} Y_{coords.y}
+          </div>
+          <div className="text-mono text-[6px] text-accent/40 uppercase tracking-[0.2em]">
+            {isSnapping ? 'TARGET_LOCKED' : 'SCANNING_ENV'}
+          </div>
+        </div>
+      </motion.div>
     </>
   );
 };
@@ -188,6 +232,14 @@ export default function App() {
             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
           >
             <MainContent onReboot={handleReboot} />
+            
+            {/* Persistent HUD Metadata */}
+            <div className="fixed bottom-8 right-8 z-[100] pointer-events-none hidden lg:block">
+              <div className="flex flex-col items-end text-right">
+                <div className="text-mono text-[8px] text-accent/40 uppercase tracking-widest mb-1">NODE_LATENCY: 14MS</div>
+                <div className="text-mono text-[8px] text-accent/20 uppercase tracking-widest">MEM_ALLOC: 412MB / 1024MB</div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -160,6 +160,41 @@ const CodeFragment = ({ text, x, y, delay }) => (
   </motion.div>
 );
 
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+const DecryptText = ({ text, delay = 0, trigger = true }) => {
+  const [displayText, setDisplayText] = useState("");
+
+  useEffect(() => {
+    if (!trigger) return;
+    let timeout;
+    let frame = 0;
+    const maxFrames = 15;
+
+    const animate = () => {
+      if (frame < maxFrames) {
+        let random = "";
+        for (let i = 0; i < text.length; i++) {
+          random += CHARS[Math.floor(Math.random() * CHARS.length)];
+        }
+        setDisplayText(random);
+        frame++;
+        timeout = setTimeout(animate, 40);
+      } else {
+        setDisplayText(text);
+      }
+    };
+
+    const startTimeout = setTimeout(animate, delay);
+    return () => {
+      clearTimeout(startTimeout);
+      clearTimeout(timeout);
+    };
+  }, [text, delay, trigger]);
+
+  return <span>{displayText || text}</span>;
+};
+
 export default function Hero() {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
@@ -167,6 +202,13 @@ export default function Hero() {
   const ctaRef = useRef(null);
   const labelRef = useRef(null);
   const lineRef = useRef(null);
+  const [startScramble, setStartScramble] = useState(false);
+
+  useEffect(() => {
+    // Delay scramble to align with GSAP entrance
+    const timer = setTimeout(() => setStartScramble(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -286,21 +328,13 @@ export default function Hero() {
       <CodeFragment text="neural.calibrate(weights)" x="15%" y="50%" delay={2} />
       <CodeFragment text="export default Architecture;" x="78%" y="55%" delay={3.8} />
 
-      {/* HUD corners */}
+      {/* HUD corners — Repositioned to avoid Logo overlap */}
       <motion.div
         style={{ opacity: textOpacity }}
-        className="absolute top-8 left-8 md:top-12 md:left-20 text-mono text-[8px] uppercase tracking-[0.3em] text-ink-muted space-y-1 z-10"
-      >
-        <div>LAT: 37.7749 / LON: -122.4194</div>
-        <div>SYS_UPTIME: <span className="text-terminal-green">3,247 HRS</span></div>
-      </motion.div>
-
-      <motion.div
-        style={{ opacity: textOpacity }}
-        className="absolute bottom-8 left-8 md:bottom-12 md:left-20 text-mono text-[8px] uppercase tracking-[0.3em] text-ink-muted space-y-1 z-10"
+        className="absolute bottom-20 left-6 right-6 md:bottom-12 md:left-20 flex flex-row md:flex-col justify-between md:justify-start gap-4 text-mono text-[7px] md:text-[8px] uppercase tracking-[0.3em] text-ink-muted z-10"
       >
         <div>REF_SEC: 04.0.1</div>
-        <div>BOOT_LEVEL: <span className="text-accent">PRIME</span></div>
+        <div className="text-right md:text-left">BOOT_LEVEL: <span className="text-accent">PRIME</span></div>
       </motion.div>
 
       {/* Main content */}
@@ -327,16 +361,7 @@ export default function Hero() {
                 className="text-display font-bold tracking-extratight leading-[0.9]"
                 style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
               >
-                {word.split("").map((char, i) => (
-                  <span
-                    key={i}
-                    data-char
-                    className="inline-block origin-bottom"
-                    style={{ opacity: 0 }}
-                  >
-                    {char}
-                  </span>
-                ))}
+                <DecryptText text={word} delay={wi * 400 + 800} trigger={startScramble} />
               </h1>
             </div>
           ))}

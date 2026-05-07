@@ -5,6 +5,30 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Layers, Monitor, Zap, Code, Globe } from 'lucide-react';
 import MagneticButton from '../MagneticButton';
+import { useState } from 'react';
+
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+const DecryptText = ({ text, delay = 0, trigger = true }) => {
+  const [displayText, setDisplayText] = useState("");
+  useEffect(() => {
+    if (!trigger) return;
+    let timeout;
+    let frame = 0;
+    const animate = () => {
+      if (frame < 15) {
+        let random = "";
+        for (let i = 0; i < text.length; i++) random += CHARS[Math.floor(Math.random() * CHARS.length)];
+        setDisplayText(random);
+        frame++;
+        timeout = setTimeout(animate, 40);
+      } else setDisplayText(text);
+    };
+    const startTimeout = setTimeout(animate, delay);
+    return () => { clearTimeout(startTimeout); clearTimeout(timeout); };
+  }, [text, delay, trigger]);
+  return <span>{displayText || text}</span>;
+};
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,6 +90,7 @@ export default function Projects() {
   const headingRef = useRef(null);
   const trackRef = useRef(null);
   const scrollContainerRef = useRef(null);
+  const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -86,7 +111,11 @@ export default function Projects() {
           {
             y: 0, opacity: 1, rotateX: 0,
             duration: 1.4, stagger: 0.03, ease: 'power4.out',
-            scrollTrigger: { trigger: headingRef.current, start: 'top 85%' },
+            scrollTrigger: { 
+              trigger: headingRef.current, 
+              start: 'top 85%',
+              onEnter: () => setIsRevealed(true)
+            },
           }
         );
       }
@@ -102,6 +131,7 @@ export default function Projects() {
 
       // Horizontal scroll — pin section and scrub cards
       if (trackRef.current && scrollContainerRef.current) {
+        const isMobile = window.innerWidth < 1024;
         const cards = trackRef.current.querySelectorAll('[data-card]');
         const totalWidth = trackRef.current.scrollWidth - scrollContainerRef.current.offsetWidth;
 
@@ -115,19 +145,26 @@ export default function Projects() {
           }
         );
 
-        // Horizontal scroll
-        gsap.to(trackRef.current, {
-          x: -totalWidth,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: scrollContainerRef.current,
-            start: 'top 15%',
-            end: () => `+=${totalWidth}`,
-            pin: true,
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
-        });
+        if (!isMobile) {
+          // Desktop Horizontal scroll with Pinning
+          gsap.to(trackRef.current, {
+            x: -totalWidth,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: scrollContainerRef.current,
+              start: 'top 15%',
+              end: () => `+=${totalWidth}`,
+              pin: true,
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          });
+        } else {
+          // Mobile natural scroll (no pinning)
+          trackRef.current.style.overflowX = 'auto';
+          trackRef.current.style.scrollSnapType = 'x mandatory';
+          cards.forEach(card => card.style.scrollSnapAlign = 'start');
+        }
       }
 
       // Progress bar
@@ -173,11 +210,7 @@ export default function Projects() {
                 className="text-display text-5xl md:text-7xl lg:text-8xl font-bold tracking-extratight leading-none"
                 style={{ perspective: '800px' }}
               >
-                {title.split("").map((char, i) => (
-                  <span key={i} data-char className={`inline-block origin-bottom opacity-0 ${char === ' ' ? 'mr-4' : ''} ${i >= 4 ? 'text-accent glow-text-subtle' : ''}`}>
-                    {char === ' ' ? '\u00A0' : char}
-                  </span>
-                ))}
+                <DecryptText text="THE FORGE" delay={200} trigger={isRevealed} />
               </h2>
             </div>
             <div data-desc className="opacity-0">
