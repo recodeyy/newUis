@@ -43,12 +43,12 @@ export default function CTA({ onOpenContact }) {
       <div className="relative z-10 text-center max-w-5xl mx-auto">
         <div data-label className="inline-flex items-center gap-4 mb-12 opacity-0">
           <div className="w-8 h-[1px] bg-accent/50" />
-          <span className="text-mono text-[9px] text-accent tracking-[0.5em] uppercase">Initiate Transmission</span>
+          <span className="text-mono text-[9px] text-accent tracking-[0.5em] uppercase">Ready to Start?</span>
           <div className="w-8 h-[1px] bg-accent/50" />
         </div>
 
         <div ref={hRef} className="mb-16" style={{ perspective: '1000px' }}>
-          {heading.map((word, i) => (
+          {["TRANSFORM", "YOUR PRESENCE."].map((word, i) => (
             <div key={i} className="overflow-hidden">
               <h2 data-word className="text-display font-bold tracking-extratight leading-[0.85] opacity-0 origin-bottom" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>
                 {i === 1 ? <span className="text-accent glow-text">{word}</span> : word}
@@ -63,15 +63,16 @@ export default function CTA({ onOpenContact }) {
               onClick={onOpenContact}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              aria-label="Book a Discovery Call"
               className="relative group border border-accent text-accent px-12 py-5 text-mono text-[10px] tracking-[0.3em] uppercase overflow-hidden transition-colors hover:text-white"
               data-cursor-hover
             >
               <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-              <span className="relative z-10">Start A Project</span>
+              <span className="relative z-10">Book A Call</span>
             </motion.button>
           </MagneticButton>
           <MagneticButton strength={0.2}>
-            <a href="mailto:recodeyy@gmail.com" className="text-display text-2xl md:text-3xl font-bold text-ink-muted hover:text-accent transition-colors duration-500 relative group" data-cursor-hover>
+            <a href="mailto:recodeyy@gmail.com" aria-label="Email Recodey at recodeyy@gmail.com" className="text-display text-2xl md:text-3xl font-bold text-ink-muted hover:text-accent transition-colors duration-500 relative group" data-cursor-hover>
               recodeyy@gmail.com
               <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-accent/30 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
             </a>

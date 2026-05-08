@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, Layers, Monitor, Zap, Code, Globe } from 'lucide-react';
+import { ArrowUpRight, Building2, Activity, GraduationCap, Music, TestTube, Brain, Cpu } from 'lucide-react';
 import MagneticButton from '../MagneticButton';
 import { useState } from 'react';
 
@@ -33,11 +33,13 @@ const DecryptText = ({ text, delay = 0, trigger = true }) => {
 gsap.registerPlugin(ScrollTrigger);
 
 const PRODUCTS = [
-  { num: "SYS_01", icon: Layers, title: "Web Platforms", desc: "High-performance web applications with modern architectures — Next.js, React, and serverless backends built for scale.", tag: "FULL-STACK", color: "from-accent/10 to-transparent" },
-  { num: "SYS_02", icon: Monitor, title: "Brand Identity", desc: "Cinematic visual identities and design systems that communicate authority and engineering precision.", tag: "DESIGN", color: "from-code-purple/10 to-transparent" },
-  { num: "SYS_03", icon: Zap, title: "AI Integration", desc: "Custom AI-powered features — from intelligent automation to LLM integration — tailored to your business workflows.", tag: "INTELLIGENCE", color: "from-terminal-green/10 to-transparent" },
-  { num: "SYS_04", icon: Code, title: "Product Engineering", desc: "End-to-end product development from architecture to deployment — MVPs that scale into empires.", tag: "ENGINEERING", color: "from-accent/10 to-transparent" },
-  { num: "SYS_05", icon: Globe, title: "Interactive Motion", desc: "WebGL, 3D environments, and animation systems that transform static interfaces into immersive experiences.", tag: "MOTION", color: "from-code-purple/10 to-transparent" },
+  { num: "SYS_01", icon: Building2, title: "Sero", desc: "A comprehensive society management system featuring an AI-integrated backend, finance modules, and a high-performance cross-platform mobile application.", tag: "SOCIETY OS", color: "from-accent/10 to-transparent" },
+  { num: "SYS_02", icon: Activity, title: "Zcare", desc: "Next-generation healthcare platform designed to streamline clinic operations, patient care tracking, and secure medical data management.", tag: "HEALTHCARE", color: "from-code-purple/10 to-transparent" },
+  { num: "SYS_03", icon: GraduationCap, title: "School OS", desc: "An advanced school management system integrating a production-grade AI module for administrative and educational workflows with robust role-based access.", tag: "EDUCATION", color: "from-terminal-green/10 to-transparent" },
+  { num: "SYS_04", icon: Music, title: "AI Music", desc: "A sophisticated AI music generation pipeline utilizing RVC and Faster-Whisper, optimized for resource-efficient processing.", tag: "AUDIO AI", color: "from-accent/10 to-transparent" },
+  { num: "SYS_05", icon: TestTube, title: "AI Testing", desc: "Automated validation and testing infrastructure powered by AI to ensure architectural stability and continuous integration.", tag: "DEVTOOLS", color: "from-code-purple/10 to-transparent" },
+  { num: "SYS_06", icon: Brain, title: "CRAG", desc: "Cognitive Retrieval-Augmented Generation systems engineered for deep-state knowledge retrieval and intelligent context synthesis.", tag: "INTELLIGENCE", color: "from-terminal-green/10 to-transparent" },
+  { num: "SYS_07", icon: Cpu, title: "NeuroStack", desc: "Also known as PocketEngineer. An advanced architectural toolkit and deep-state software assistant tailored for complex engineering pipelines.", tag: "ENGINEERING", color: "from-accent/10 to-transparent" },
 ];
 
 const ProductCard = ({ title, desc, tag, icon: Icon, num, color }) => (
@@ -238,7 +240,7 @@ export default function Projects() {
             </div>
             <div className="flex justify-between mt-4">
               <span className="text-mono text-[8px] text-ink-muted tracking-[0.3em]">001</span>
-              <span className="text-mono text-[8px] text-ink-muted tracking-[0.3em]">005</span>
+              <span className="text-mono text-[8px] text-ink-muted tracking-[0.3em]">007</span>
             </div>
           </div>
         </div>

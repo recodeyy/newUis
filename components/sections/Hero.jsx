@@ -354,15 +354,22 @@ export default function Hero() {
         </div>
 
         {/* Title */}
-        <div ref={titleRef} className="mb-8" style={{ perspective: '1000px' }}>
+        <h1 className="sr-only">Engineering Daylight</h1>
+        <div ref={titleRef} className="mb-8" style={{ perspective: '1000px' }} aria-hidden="true">
           {words.map((word, wi) => (
             <div key={wi} className="overflow-hidden" data-word>
-              <h1
-                className="text-display font-bold tracking-extratight leading-[0.9]"
+              <div
+                className="text-display font-bold tracking-extratight leading-[0.9] flex flex-wrap justify-center"
                 style={{ fontSize: 'clamp(3.5rem, 12vw, 10rem)' }}
               >
-                <DecryptText text={word} delay={wi * 400 + 800} trigger={startScramble} />
-              </h1>
+                {word.split('').map((char, ci) => (
+                  <span key={ci} data-char className="inline-block">
+                    {startScramble ? (
+                      <DecryptText text={char} delay={wi * 400 + ci * 50 + 800} trigger={startScramble} />
+                    ) : char}
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -381,9 +388,19 @@ export default function Hero() {
         </p>
 
         {/* CTA */}
-        <div ref={ctaRef} className="opacity-0">
+        <div ref={ctaRef} className="opacity-0 flex gap-6 mt-4">
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            aria-label="View Our Work"
+            className="group flex items-center gap-4 text-mono text-[10px] uppercase tracking-[0.3em] text-accent border border-accent px-6 py-3 hover:bg-accent hover:text-white transition-colors"
+            data-cursor-hover
+          >
+            <span>View Work</span>
+          </button>
+          
           <button
             onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+            aria-label="Scroll to about section"
             className="group flex items-center gap-4 text-mono text-[10px] uppercase tracking-[0.3em] text-ink-muted hover:text-accent transition-colors"
             data-cursor-hover
           >
@@ -392,7 +409,7 @@ export default function Hero() {
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <svg width="12" height="24" viewBox="0 0 12 24" fill="none" className="text-accent">
+              <svg width="12" height="24" viewBox="0 0 12 24" fill="none" className="text-accent" aria-hidden="true">
                 <path d="M6 0L6 22M6 22L1 17M6 22L11 17" stroke="currentColor" strokeWidth="1" />
               </svg>
             </motion.div>

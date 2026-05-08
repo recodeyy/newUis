@@ -16,6 +16,7 @@ import Projects from './sections/Products';
 import Services from './sections/Services';
 import Story from './sections/Story';
 import Insights from './sections/Insights';
+import SocialProof from './sections/SocialProof';
 import CTA from './sections/CTA';
 import Footer from './sections/Footer';
 import ContactModal from './sections/Contact';
@@ -33,10 +34,12 @@ const CustomCursor = () => {
   const dotY = useSpring(0, { damping: 40, stiffness: 600 });
   const ringScale = useSpring(1, { damping: 20, stiffness: 300 });
 
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const coordsRef = useRef(null);
   const [isSnapping, setIsSnapping] = useState(false);
 
   useEffect(() => {
+    let animationFrameId;
+
     const handleMouseMove = (e) => {
       let targetX = e.clientX;
       let targetY = e.clientY;
@@ -60,7 +63,14 @@ const CustomCursor = () => {
       ringY.set(targetY);
       dotX.set(e.clientX);
       dotY.set(e.clientY);
-      setCoords({ x: e.clientX, y: e.clientY });
+
+      // Direct DOM update for coordinates to avoid React re-renders (JS-heaviness fix)
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        if (coordsRef.current) {
+          coordsRef.current.textContent = `X_${e.clientX} Y_${e.clientY}`;
+        }
+      });
     };
 
     const handleMouseDown = () => ringScale.set(0.8);
@@ -80,6 +90,7 @@ const CustomCursor = () => {
     });
 
     return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
@@ -115,8 +126,8 @@ const CustomCursor = () => {
         style={{ x: dotX, y: dotY }}
       >
         <div className="flex flex-col gap-1 bg-bg/60 backdrop-blur-md border border-accent/10 px-2 py-1">
-          <div className="text-mono text-[7px] text-accent tracking-[0.3em] font-bold">
-            X_{coords.x} Y_{coords.y}
+          <div ref={coordsRef} className="text-mono text-[7px] text-accent tracking-[0.3em] font-bold">
+            X_0 Y_0
           </div>
           <div className="text-mono text-[6px] text-accent/40 uppercase tracking-[0.2em]">
             {isSnapping ? 'TARGET_LOCKED' : 'SCANNING_ENV'}
@@ -198,6 +209,7 @@ const MainContent = ({ onReboot }) => {
           <Services />
           <Story />
           <Insights posts={posts} onViewAll={() => setIsBlogsOpen(true)} />
+          <SocialProof />
           <CTA onOpenContact={() => setIsContactOpen(true)} />
         </main>
 

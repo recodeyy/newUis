@@ -69,6 +69,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${jetbrains.variable} ${jakarta.variable}`}>
       <head>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2308080E'/><path d='M30 30H70V70H30V30Z' stroke='%23FF3D00' stroke-width='8' fill='none'/><path d='M45 45H55V55H45V45Z' fill='%23FF3D00'/></svg>" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
